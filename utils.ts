@@ -21,17 +21,19 @@ export const calculateDaysBetween = (start: string, end: string): number => {
     return Math.round(diffMs / (1000 * 60 * 60 * 24)); // Convert ms to days
 };
 
-export const calculateProgress = (createdAt: string, targetDate: string): number => {
+export const calculateProgress = (targetDate: string): number => {
     const now = new Date().setHours(0, 0, 0, 0); // Today at midnight
-    const created = new Date(createdAt).setHours(0, 0, 0, 0);
     const target = new Date(targetDate).setHours(0, 0, 0, 0);
 
-    const totalDays = calculateDaysBetween(createdAt, targetDate); // Total days from creation to target
-    const daysElapsed = calculateDaysBetween(createdAt, new Date().toISOString()); // Days from creation to now
+    // Define a fixed countdown period (e.g., 30 days before the event)
+    const countdownDays = 30; // Adjust this as needed
+    const start = target - countdownDays * 24 * 60 * 60 * 1000; // 30 days before target
 
-    if (totalDays <= 0) return 0; // Invalid range (target before creation)
+    const totalDays = countdownDays; // Total duration of countdown
+    const daysElapsed = Math.max(0, (now - start) / (1000 * 60 * 60 * 24)); // Days since start
+
     if (now >= target) return 100; // Event has passed
-    if (now < created) return 0; // Not yet started (shouldn’t happen)
+    if (now < start) return 0; // Too far in future (before countdown start)
 
-    return Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100)); // Percentage
+    return Math.min(100, (daysElapsed / totalDays) * 100); // Percentage
 };

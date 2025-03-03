@@ -3,15 +3,23 @@
 import { useState, useEffect } from "react";
 import EventCard from "./components/EventCard";
 import { Event, saveEvents, loadEvents } from "@/utils";
+import { dummyEvents, populateDummyData } from "@/data";
 
 export default function Home() {
   const [events, setEvents] = useState<Event[]>([]);
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false); // Toggle form visibility
-
+  
   useEffect(() => {
-    setEvents(loadEvents());
+    // Load existing events or populate with dummy data if empty (dev only)
+    const storedEvents = loadEvents();
+    if (storedEvents.length === 0 && process.env.NODE_ENV === "development") {
+      populateDummyData();
+      setEvents(dummyEvents);
+    } else {
+      setEvents(storedEvents);
+    }
   }, []);
 
   useEffect(() => {
@@ -51,8 +59,8 @@ export default function Home() {
         {/* Form (expands below navbar when open) */}
         <div
           className={`w-full max-w-md bg-sf p-3 flex flex-col gap-4 rounded-4xl border border-st
-            transition-all duration-300 ease-in-out ${isFormOpen ? "block" : 
-            "hidden"
+            transition-all duration-300 ease-in-out ${isFormOpen ? "block" :
+              "hidden"
             }`}
         >
           <form onSubmit={addEvent} className="flex flex-col gap-4">
@@ -80,20 +88,21 @@ export default function Home() {
       </nav>
 
 
-
       {/* Event List */}
-      <div className="flex flex-col gap-4 w-full items-center mt-24"> {/* Margin to avoid overlap with fixed navbar */}
+      <div className="flex flex-col gap-4 w-full items-center mt-24">
         {events.length === 0 ? (
           <p className="text-tx-secondary">No events yet. Add one above!</p>
         ) : (
-          events.map((event) => (
-            <EventCard
-              key={event.id}
-              name={event.name}
-              date={event.date}
-              createdAt={event.createdAt}
-            />
-          ))
+          [...events] // Create a copy to avoid mutating the original array
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort by date ascending
+            .map((event) => (
+              <EventCard
+                key={event.id}
+                name={event.name}
+                date={event.date}
+                createdAt={event.createdAt}
+              />
+            ))
         )}
       </div>
     </main>
