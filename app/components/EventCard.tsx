@@ -15,28 +15,27 @@ export default function EventCard({ name, date, createdAt, onDelete }: EventCard
 
     return (
         <div
-            className={`relative bg-sf-secondary font-sans border
-                overflow-hidden
-                border-st w-full max-w-md cursor-pointer transition-all duration-300 ${isExpanded ? 'rounded-3xl' : 'rounded-full'}`}
-
+            className={`relative bg-sf-secondary font-xanh border overflow-hidden
+                border-st w-full max-w-md cursor-pointer transition-all duration-300 
+                `}
             onClick={() => setIsExpanded(!isExpanded)}
         >
             {/* Single-line initial view */}
             <div className={`flex p-6 py-4 flex-row justify-between items-center ${isExpanded ? 'border-b' : ''} border-st`}
                 style={{
-                    background: `linear-gradient(to right, var(--color-st) ${progress}%, var(--color-sf-secondary) ${progress}%)`,
+                    background: `linear-gradient(to right, var(--color-white) ${progress}%, var(--color-black) ${progress}%)`,
                 }}
             >
-                <h2 className="text-tx-tertiary text-lg font-semibold truncate">{name}</h2>
-                <p className="text-tx font-bold uppercase text-sm">
+                <h2 className="text-white text-lg truncate mix-blend-difference">{name}</h2>
+                <p className="text-white text-sm uppercase mix-blend-difference">
                     {daysLeft <= 0 ? "Event Passed" : `${daysLeft} days left`}
                 </p>
             </div>
 
             {/* Expanded view */}
             {isExpanded && (
-                <div className="p-6 py-4  flex flex-row items-center font-family-sans font-medium justify-between gap-2">
-                    <div className="flex flex-row items-center text-tx-tertiary text-base justify-center gap-2">
+                <div className="flex flex-row justify-between items-center gap-2 p-6 py-4 font--sans font-medium">
+                    <div className="flex flex-row justify-center items-center gap-2 text-white text-base">
                         <p>
                             {new Date(createdAt).toLocaleDateString()}
                         </p>
@@ -51,9 +50,9 @@ export default function EventCard({ name, date, createdAt, onDelete }: EventCard
                                 e.stopPropagation(); // Prevent card collapse on delete click
                                 onDelete();
                             }}
-                            className="text-tx-secondary hover:text-tx-tertiary w-6 h-6 flex items-center justify-center"
+                            className="flex justify-center items-center w-6 h-6 text-white cursor-pointer"
                         >
-                            <Icon icon="mynaui:trash-solid" className="text-3xl text-tx" />
+                            <Icon icon="mynaui:trash-solid" className="text-white text-3xl" />
                         </button>
                     )}
                 </div>
